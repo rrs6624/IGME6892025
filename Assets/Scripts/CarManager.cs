@@ -10,28 +10,12 @@ public class CarManager : MonoBehaviour
     public GameObject[] carPrefabs; // Assign your car prefabs in Inspector
     public Transform[] spawnPoints; // Assign spawn positions in Inspector
     public Transform[] pathPoints; //Assign the path that the cars will try to follow in the race
-
-    [Header("PlayerMovement")]
-    public InputActionReference move;
-    public float moveSpeed;
-    
-    private Vector3 direction;
+   
     private Rigidbody rb;
-
-    [Header("Camera Settings")]
-    public float cameraHeight = 8f;
-    public float cameraDistance = 5f;
-    public float cameraFollowSpeed = 1f;
-
-    public float cameraRotationSpeed = 1f;
-
-    private float currentRotationVelocity; // For smooth rotation
-    private Vector3 currentCameraVelocity; // For smooth camera movement
-
 
     [Header("Player Settings")]
     public int playerCarIndex = 0; // Defaults to the first car being the player
-    public GameObject arcGisCamera;
+    
 
     [Header("Spawning Settings")]
     public float spawnDelay = 3f; // Wait for map to load
@@ -39,61 +23,20 @@ public class CarManager : MonoBehaviour
 
     private List<GameObject> spawnedCars = new List<GameObject>();
     private GameObject playerCar;
-  
+
+    [Header("Win Con")]
+    public Transform finishLine; // Drag your final checkpoint here
+    public float finishLineDistance = 10f;
+    private GameObject winningCar;
+    private bool raceFinished = false;
+
 
     void Start()
     {
         StartCoroutine(SpawnCarsAfterDelay());
-    }
 
-    private void Update()
-    {
-        //updating the camera location every frame to always be behind the player car
-        Vector3 playerCarLocation  = playerCar.transform.position;
-
-
-        // Calculate desired camera position based on car's current rotation
-        Vector3 desiredPosition = playerCar.transform.position +
-                                 playerCar.transform.up * cameraHeight -
-                                 playerCar.transform.forward * cameraDistance;
         
-        // Smoothly move camera to desired position
-        arcGisCamera.transform.position = Vector3.SmoothDamp(
-            arcGisCamera.transform.position,
-            desiredPosition,
-            ref currentCameraVelocity,
-            cameraFollowSpeed * Time.deltaTime
-        );
-
-        // Smoothly rotate camera to look at car
-        Quaternion desiredRotation = Quaternion.LookRotation(playerCar.transform.position - arcGisCamera.transform.position);
-        arcGisCamera.transform.rotation = Quaternion.Slerp(
-            arcGisCamera.transform.rotation,
-            desiredRotation,
-            cameraRotationSpeed * Time.deltaTime
-        );
-
-        // Always look at the car's position + some height
-        arcGisCamera.transform.LookAt(playerCar.transform.position + new Vector3(0f, 5f, 0f));
-
-        direction = move.action.ReadValue<Vector3>();
     }
-
-    private void FixedUpdate()
-    {
-        if (rb == null) return;
-
-        // Forward/backward movement (using Z component)
-        Vector3 forwardMovement = playerCar.transform.forward * (direction.z * moveSpeed);
-
-        // Apply forward movement
-        rb.velocity = new Vector3(forwardMovement.x, rb.velocity.y, forwardMovement.z);
-
-        // Rotation (using X component for steering)
-        float rotation = direction.x * moveSpeed * 2f; // Adjust multiplier for rotation speed
-        rb.angularVelocity = new Vector3(0f, rotation, 0f);
-    }
-
     IEnumerator SpawnCarsAfterDelay()
     {
         // Wait for map to load
@@ -101,6 +44,12 @@ public class CarManager : MonoBehaviour
 
         SpawnAllCars();
         SetupPlayerCar();
+        
+    }
+
+    private void Update()
+    {
+        CheckForWinner();
     }
 
     void SpawnAllCars()
@@ -139,8 +88,6 @@ public class CarManager : MonoBehaviour
             return new Vector3(carIndex * 5f, verticalOffset, 0f);
         }
     }
-
-
     void SetupPlayerCar()
     {
         if (spawnedCars.Count == 0)
@@ -149,15 +96,12 @@ public class CarManager : MonoBehaviour
             return;
         }
 
-        // Clamp player index to valid range
         playerCarIndex = Mathf.Clamp(playerCarIndex, 0, spawnedCars.Count - 1);
         playerCar = spawnedCars[playerCarIndex];
         rb = playerCar.GetComponent<Rigidbody>();
 
-        // Set up player car (add player controller, etc.)
         SetupCarController(playerCar, true);
 
-        // Set up other cars as AI
         for (int i = 0; i < spawnedCars.Count; i++)
         {
             if (i != playerCarIndex)
@@ -169,20 +113,46 @@ public class CarManager : MonoBehaviour
         Debug.Log($"Player car set to: {playerCar.name}");
     }
 
+
+
     void SetupCarController(GameObject car, bool isPlayer)
     {
         if (isPlayer)
         {
             car.tag = "Player";
+            PlayerCarManager playerManager = car.GetComponent<PlayerCarManager>();
+            if (playerManager != null) playerManager.enabled = true;
 
+            AICarController aiController = car.GetComponent<AICarController>();
+            if (aiController != null) aiController.enabled = false;
         }
         else
         {
             car.tag = "AI";
+            PlayerCarManager playerManager = car.GetComponent<PlayerCarManager>();
+            if (playerManager != null) playerManager.enabled = false;
+
+            AICarController aiController = car.GetComponent<AICarController>();
+            if (aiController == null)
+            {
+                aiController = car.AddComponent<AICarController>();
+            }
+
+            // Make sure path points are assigned BEFORE enabling
+            if (pathPoints != null && pathPoints.Length > 0)
+            {
+                aiController.pathPoints = pathPoints;
+                Debug.Log($"Assigned {pathPoints.Length} waypoints to {car.name}");
+            }
+            else
+            {
+                Debug.LogError("No path points assigned in CarManager!");
+            }
+
+            aiController.enabled = true;
+            aiController.isRacing = true; // Force start racing
         }
     }
-
-    // Public methods to switch cars (for debugging or game features)
     public void SwitchToNextCar()
     {
         playerCarIndex = (playerCarIndex + 1) % spawnedCars.Count;
@@ -198,8 +168,58 @@ public class CarManager : MonoBehaviour
         }
     }
 
-    // Getter methods
-    public GameObject GetPlayerCar() => playerCar;
-    public List<GameObject> GetAllCars() => spawnedCars;
-    public int GetCarCount() => spawnedCars.Count;
+    public Transform[] GetPath()
+    {
+        return pathPoints;
+    }
+
+    public Rigidbody GetRigidbody(int index = 0)
+    {
+        if (index >= spawnedCars.Count)
+        {
+            rb = spawnedCars[index].GetComponent<Rigidbody>();
+            return rb;
+        }
+        rb = playerCar.GetComponent<Rigidbody>();
+        return rb;
+    }
+
+    public int GetPlayerIndex()
+    {
+        return playerCarIndex;
+    }
+
+    void CheckForWinner()
+    {
+        foreach (GameObject car in spawnedCars)
+        {
+            if (car == null) continue;
+
+            // Check if car is close to finish line
+            float distanceToFinish = Vector3.Distance(car.transform.position, finishLine.position);
+
+            if (distanceToFinish < finishLineDistance && !raceFinished)
+            {
+                winningCar = car;
+                raceFinished = true;
+                DeclareWinner(car);
+                break; // Stop checking once we have a winner
+            }
+        }
+    }
+    void DeclareWinner(GameObject winner)
+    {
+        Debug.Log(" RACE FINISHED! ");
+        Debug.Log("WINNER: " + winner.name);
+
+        if (winner.CompareTag("Player"))
+        {
+            Debug.Log(" YOU WIN! ");
+        }
+        else
+        {
+            Debug.Log(" YOU LOSE! Winner: " + winner.name);
+        }
+
+    }
 }

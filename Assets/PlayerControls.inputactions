@@ -2,35 +2,24 @@
     "name": "PlayerControls",
     "maps": [
         {
-            "name": "Movement",
+            "name": "Gameplay",
             "id": "2c56fba7-5ab5-4774-aece-f809e810e585",
             "actions": [
                 {
                     "name": "Move",
-                    "type": "PassThrough",
+                    "type": "Value",
                     "id": "517ba492-2d93-48e9-8c17-673f359b28b9",
-                    "expectedControlType": "Vector3",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
                 {
-                    "name": "",
-                    "id": "70ad94b0-1060-40f9-9933-00e85d4a07a5",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "3D Vector",
-                    "id": "8cac7c3c-ef9f-4b2b-be0a-9495d07a326a",
-                    "path": "3DVector",
+                    "name": "2D Vector",
+                    "id": "2d001b06-bf73-4b8e-a158-32ac976eb480",
+                    "path": "2DVector",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -40,8 +29,8 @@
                 },
                 {
                     "name": "up",
-                    "id": "57b2b873-2921-4957-950f-e2618cb70472",
-                    "path": "<Keyboard>/space",
+                    "id": "0e6b236f-2c9d-41f1-934e-058779257ba5",
+                    "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -51,8 +40,8 @@
                 },
                 {
                     "name": "down",
-                    "id": "71b9a74b-cec1-4638-b6a5-09dae8f6b9f8",
-                    "path": "<Keyboard>/shift",
+                    "id": "12f999a9-fb70-437e-a887-d3151cdddb23",
+                    "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -62,19 +51,8 @@
                 },
                 {
                     "name": "left",
-                    "id": "4e4eac97-6fbc-4bfe-b397-74585814587e",
+                    "id": "ab09c46b-d6f2-4a30-9e57-c99d52e71e95",
                     "path": "<Keyboard>/a",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "right",
-                    "id": "0c027a6a-ab4f-4e2b-b7a7-7cbcb48801ff",
-                    "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -83,23 +61,12 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "forward",
-                    "id": "aea1e5d0-0134-4a62-8084-6b8617f8d8e0",
-                    "path": "<Keyboard>/w",
+                    "name": "right",
+                    "id": "0983748a-3b6b-46a2-a796-4f1743dc3047",
+                    "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "backward",
-                    "id": "fb82c938-446c-402f-bafb-ad76a0479750",
-                    "path": "<Keyboard>/s",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard",
+                    "groups": "",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true

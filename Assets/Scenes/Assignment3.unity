@@ -750,7 +750,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1562536176}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9e295d62bf65a7247bc772a43507fd4c, type: 3}
   m_Name: 
@@ -828,6 +828,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1682087880}
   - component: {fileID: 1682087879}
+  - component: {fileID: 1682087881}
   m_Layer: 0
   m_Name: CarManager
   m_TagString: Untagged
@@ -870,16 +871,11 @@ MonoBehaviour:
   - {fileID: 7434504837389380476, guid: a661f463c44b07b4c839c4980dfd2341, type: 3}
   - {fileID: 3275125680671995569, guid: 98c874a28a3ef0242806ba06e061cd26, type: 3}
   - {fileID: 6912545710135078661, guid: e85598c16b366fd43bab2b7293669318, type: 3}
-  move: {fileID: -5449119433328773572, guid: d12d34a0cc7eeeb47b259e90ca889e72, type: 3}
-  moveSpeed: 20
-  cameraHeight: 8
-  cameraDistance: 5
-  cameraFollowSpeed: 5
-  cameraRotationSpeed: 3
   playerCarIndex: 0
-  arcGisCamera: {fileID: 1562536176}
   spawnDelay: 3
   verticalOffset: 2
+  finishLine: {fileID: 0}
+  finishLineDistance: 10
 --- !u!4 &1682087880
 Transform:
   m_ObjectHideFlags: 0
@@ -895,6 +891,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1682087881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1682087878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d7d4e76e37bf541bcbbb88272b7fd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxSpeed: 15
+  acceleration: 8
+  steeringSpeed: 2
+  brakeForce: 10
+  waypointDistance: 5
+  pathPoints: []
+  isRacing: 1
 --- !u!1 &2141828467
 GameObject:
   m_ObjectHideFlags: 0

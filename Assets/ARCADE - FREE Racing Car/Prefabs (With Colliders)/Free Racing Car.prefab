@@ -495,10 +495,11 @@ GameObject:
   m_Component:
   - component: {fileID: 2792218741957914664}
   - component: {fileID: 7495443279060062592}
-  - component: {fileID: -7457765032928514656}
+  - component: {fileID: 4450616222120979506}
+  - component: {fileID: 346788748219264478}
   m_Layer: 0
   m_Name: Free Racing Car
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -546,9 +547,9 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 4
-  m_CollisionDetection: 0
---- !u!114 &-7457765032928514656
+  m_Constraints: 0
+  m_CollisionDetection: 2
+--- !u!114 &4450616222120979506
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -557,28 +558,29 @@ MonoBehaviour:
   m_GameObject: {fileID: 3311311803080157842}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Script: {fileID: 11500000, guid: 999adf211dbd365498323e0256d8b76c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: d12d34a0cc7eeeb47b259e90ca889e72,
+  rb: {fileID: 7495443279060062592}
+  moveAction: {fileID: -5449119433328773572, guid: d12d34a0cc7eeeb47b259e90ca889e72,
     type: 3}
-  m_NotificationBehavior: 0
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: Keyboard
-  m_DefaultActionMap: Movement
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
+  accelerationMultiplier: 300
+  brakesMultiplier: 150
+  steerMultiplier: 50
+--- !u!114 &346788748219264478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3311311803080157842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72b2b96754012e04988be17000612c20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCarManager: {fileID: 4450616222120979506}
+  move: {fileID: -5449119433328773572, guid: d12d34a0cc7eeeb47b259e90ca889e72, type: 3}
 --- !u!1 &3962000127133956386
 GameObject:
   m_ObjectHideFlags: 0
