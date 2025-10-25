@@ -14,6 +14,9 @@ using Esri.GameEngine.Geometry;
 
 public class PlacementEditorWindow : EditorWindow
 {
+
+    private TextAsset treeJsonAssetCache = null;
+    private TextAsset treeJsonAsset;
     private Texture2D textureNoiseMap;
     private float density = 0.5f;
     private GameObject prefab;
@@ -28,14 +31,32 @@ public class PlacementEditorWindow : EditorWindow
 
     private void OnGUI()
     {
+        const string JSON_PATH = "Assets/JSONData/data.json";
+
+        treeJsonAsset = (TextAsset)EditorGUILayout.ObjectField(
+        "JSON Data File",
+        treeJsonAsset,
+        typeof(TextAsset),
+        false // Do not allow scene objects (false)
+        );
+
         textureNoiseMap = (EditorGUILayout.ObjectField("Noise Map", textureNoiseMap, typeof(Texture2D), false)) as Texture2D;
         if (GUILayout.Button("Generate Noise Map"))
         {
+            if (treeJsonAssetCache == null)
+            {
+                treeJsonAssetCache = AssetDatabase.LoadAssetAtPath<TextAsset>(JSON_PATH);
+            }
+            if (treeJsonAssetCache == null)
+            {
+                Debug.LogError($"Load Failure: JSON file not found at '{JSON_PATH}'. Cannot generate map.");
+                return;
+            }
             int width = (int)Terrain.activeTerrain.terrainData.size.x;
             int height = (int)Terrain.activeTerrain.terrainData.size.z;
             float scale = 5;
             //textureNoiseMap = Noise.GetNoiseMap(width, height, scale);
-            textureNoiseMap = Noise.GetCanopyNoiseMap(width, height, scale);
+            textureNoiseMap = Noise.GetCanopyNoiseMap(width, height, scale, treeJsonAsset);
             Debug.Log("Successfully generated noise map");
         }
 

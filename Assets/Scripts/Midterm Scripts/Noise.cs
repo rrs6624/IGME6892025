@@ -41,22 +41,33 @@ public class Noise
         return newNoiseMap;
     }
 
-    public static void ReadJson()
+    public static void ReadJson(TextAsset dataAsset)
     {
-        canopyLeafOn.Clear();
-        TextAsset loadedData = Resources.Load<TextAsset>("Assets/StreamingAssets/tree_density.json");
+        if (dataAsset == null)
+        {
+            Debug.LogError("ReadJson failed: The TextAsset is null.");
+            return;
+        }
 
-        RootObject rootObject = JsonUtility.FromJson<RootObject>(treeData.text);
+        canopyLeafOn.Clear();
+        RootObject rootObject = JsonUtility.FromJson<RootObject>(dataAsset.text);
+
+        if (rootObject == null || rootObject.features == null)
+        {
+            Debug.LogError("JSON parsing failed or features list is null.");
+            return;
+        }
+
         foreach (Feature feature in rootObject.features)
         {
             canopyLeafOn.Add(feature.attributes.LEAFON_CC);
         }
     }
 
-    public static Texture2D GetCanopyNoiseMap(int width, int height, float scale)
+    public static Texture2D GetCanopyNoiseMap(int width, int height, float scale, TextAsset textAsset)
     {
         Texture2D newNoiseMap = new Texture2D(width, height);
-        ReadJson();
+        ReadJson(textAsset);
 
         if (canopyLeafOn.Count == 0)
         {
