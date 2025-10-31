@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3335006}
   - component: {fileID: 2346822}
   - component: {fileID: 4161715361434045004}
+  - component: {fileID: 6575610508396587361}
   m_Layer: 0
   m_Name: Tree9_4
   m_TagString: Untagged
@@ -86,7 +87,7 @@ MeshRenderer:
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
   m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
+  m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
@@ -122,6 +123,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &6575610508396587361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 114418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 225669a63980d8644b68648c1cbee455, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  fireSourcePrefab: {fileID: 8829451551789304542, guid: 244b1cc8940bd0844a05812855fbe45d,
+    type: 3}
 --- !u!21 &2129798
 Material:
   serializedVersion: 8
