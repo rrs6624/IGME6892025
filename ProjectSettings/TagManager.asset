@@ -8,6 +8,8 @@ TagManager:
   - MapComponent
   - Terrain
   - TreeContainer
+  - Enemy
+  - Weapon
   layers:
   - Default
   - TransparentFX
@@ -17,9 +19,9 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
+  - Player
+  - Enemy
+  - Weapon
   - 
   - 
   - 
