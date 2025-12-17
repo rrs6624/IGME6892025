@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class EnemyMovement : MonoBehaviour
 {
@@ -12,17 +13,21 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private float fastSpeed = 100f;
     [SerializeField] private float colliderDisableDistance = 200f;
     private int waitTime = 0;
+    public GameObject manager;
 
-    public int health = 3;
+    public int health = 3; 
+    public static UnityEvent OnAnyEnemyDied = new UnityEvent();
 
     private Collider enemyCollider;
-
+    private EnemyManager enemyManager;
     void Start()
     {
         player = GameObject.FindWithTag("Player");
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         enemyCollider = GetComponent<Collider>();
+        manager = GameObject.Find("Manager");
+        enemyManager = manager.GetComponent<EnemyManager>();
     }
 
     // Update is called once per frame
@@ -50,6 +55,16 @@ public class EnemyMovement : MonoBehaviour
         rb.velocity = direction * moveSpeed;
     }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Weapon"))
+        {
+            Debug.Log("Hit!");
+            TakeDamage();
+            Destroy(collision.gameObject);
+        }
+    }
+
     public void TakeDamage(int damageAmount = 1)
     {
         health -= damageAmount;
@@ -65,5 +80,6 @@ public class EnemyMovement : MonoBehaviour
     {
         Debug.Log("Enemy died!");
         Destroy(gameObject);
+        OnAnyEnemyDied?.Invoke();
     }
 }

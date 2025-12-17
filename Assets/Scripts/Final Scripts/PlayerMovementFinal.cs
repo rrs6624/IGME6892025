@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovementFinal : MonoBehaviour
 {
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private InputActionReference moveAction;  
+    [SerializeField] private int health = 10;
+    [SerializeField] private InputActionReference moveAction;   
 
     public Rigidbody rb;
     private Vector3 movement;
@@ -16,10 +18,12 @@ public class PlayerMovementFinal : MonoBehaviour
     public GameObject bulletPrefab;
     public Vector2 mousePosition;
     public Transform firePoint;
+    private Collider collider;
 
 
     public float attackSpeed = 1f;
     private float attackTimer = 0f;
+   
 
     void Start()
     {
@@ -27,6 +31,7 @@ public class PlayerMovementFinal : MonoBehaviour
         arcGisCamera.transform.position = new Vector3(this.transform.position.x, cameraHeight, this.transform.position.z);
         arcGisCamera.transform.rotation = this.transform.rotation;
         rb.freezeRotation = true;
+        collider = GetComponent<Collider>();
     }
 
     void Update()
@@ -85,5 +90,30 @@ public class PlayerMovementFinal : MonoBehaviour
             Destroy(bullet);
         }
     }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            Debug.Log("Hit!");
+            TakeDamage();
+        }
+    }
+
+    public void TakeDamage(int damageAmount = 1)
+    {
+        Debug.Log("Ow!");
+        health--;
+        if (health <= 0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        SceneManager.LoadScene("Death Scene");
+    }
+
 }
 

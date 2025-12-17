@@ -20,12 +20,15 @@ public class Bullet : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        Debug.Log($"Bullet hit: {other.gameObject.name} with tag: {other.tag}");
+
         if (other.CompareTag("Player") || other.CompareTag("Bullet"))
             return;
 
         EnemyMovement enemy = other.GetComponent<EnemyMovement>();
         if (enemy != null)
         {
+            Debug.Log("Hit an enemy");
             enemy.TakeDamage(damage);
         }
 

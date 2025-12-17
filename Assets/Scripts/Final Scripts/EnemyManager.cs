@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Esri.ArcGISMapsSDK.Components;
+using UnityEngine.Events;
 using Esri.GameEngine;
 using Esri.GameEngine.MapView;
 using Esri.GameEngine.Map;
@@ -35,6 +36,7 @@ public class EnemyManager : MonoBehaviour
         mapComponent = FindObjectOfType<ArcGISMapComponent>();
 
         StartCoroutine(WaitForMapReady());
+        EnemyMovement.OnAnyEnemyDied.AddListener(OnEnemyDeath);
     }
 
     IEnumerator WaitForMapReady()
@@ -76,7 +78,7 @@ public class EnemyManager : MonoBehaviour
         return distance;
         
     }
-    void SpawnEnemy(ArcGISPoint neighborhoodLocation)
+    public void SpawnEnemy(ArcGISPoint neighborhoodLocation)
     {
 
         GameObject enemy = Instantiate(enemyPrefab);
@@ -93,6 +95,22 @@ public class EnemyManager : MonoBehaviour
 
         enemy.GetComponent<ArcGISLocationComponent>().Position = geoPosition;
         //Debug.Log("GeoPosition: " + geoPosition.X + ", " + geoPosition.Y + ", " + geoPosition.Z);
+    }
+
+    void OnEnemyDeath()
+    {
+        ArcGISPoint neighborhoodLocation = ClosestNeighborhood();
+        SpawnEnemy(neighborhoodLocation);
+    }
+
+    public int GetCurrentEnemyCount()
+    {
+        return currentEnemyCount;
+    }
+
+    public int GetMaxEnemies()
+    {
+        return maxEnemies;
     }
 
     ArcGISPoint ClosestNeighborhood()
